@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>MeetingPlanner CR - Inicio</title>
+    <meta charset="UTF-8">
+    <link th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #fce4ec 0%, #f3e5f5 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .main-card {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+            margin: auto;
+        }
+        .titulo-index {
+            font-size: 4rem;
+            font-weight: 800;
+            color: #4a148c;
+            margin-bottom: 10px;
+        }
+        .subtitulo {
+            color: #880e4f;
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+        }
+        .btn-menu {
+            padding: 20px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 15px;
+            transition: all 0.3s;
+            margin: 10px;
+            text-decoration: none;
+            display: inline-block;
+            border: none;
+        }
+        .btn-salas {
+            background: #e91e63;
+            color: white;
+        }
+        .btn-reuniones {
+            background: #7b1fa2;
+            color: white;
+        }
+        .btn-menu:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-card">
+        <h1 class="titulo-index">MeetingPlanner</h1>
+        <p class="subtitulo">Sistema de Gestión de Espacios y Agenda</p>
+        
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <a th:href="@{/salas/listado}" class="btn-menu btn-salas w-100">
+                    -Gestionar Salas
+                </a>
+            </div>
+            <div class="col-md-6">
+                <a th:href="@{/reuniones/listado}" class="btn-menu btn-reuniones w-100">
+                    -Agenda de Reuniones
+                </a>
+            </div>
+        </div>
+        
+        <p class="text-muted mt-5 small">Caso de Estudio 1 - Aniffer Chacon </p>
+    </div>
+
+</body>
+</html>
