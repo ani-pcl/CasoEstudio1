@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>MeetingPlanner - Salas</title>
+    <meta charset="UTF-8">
+    <link th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" rel="stylesheet">
+    <style>
+        body {
+            background-color: #fce4ec;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .titulo-principal {
+            font-size: 3.5rem; 
+            font-weight: 800;
+            color: #4a148c;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            background: linear-gradient(45deg, #7b1fa2, #e91e63);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 20px;
+        }
+
+        .btn-custom {
+            background-color: #e91e63;
+            color: white;
+            border-radius: 25px;
+            padding: 10px 25px;
+            font-weight: bold;
+            transition: 0.3s;
+            border: none;
+        }
+
+        .btn-custom:hover {
+            background-color: #ad1457;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .table {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .table thead {
+            background-color: #f3e5f5;
+            color: #4a148c;
+        }
+
+        .modal-header {
+            background: #7b1fa2;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #4a148c;">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">MeetingPlanner CR</a>
+            <div class="navbar-nav">
+                <a class="nav-link active" th:href="@{/salas/listado}">Salas</a>
+                <a class="nav-link" th:href="@{/reuniones/listado}">Reuniones</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="titulo-principal">Gestión de Salas</h1>
+
+        <div class="d-flex justify-content-end mb-4">
+            <button class="btn btn-custom shadow" data-bs-toggle="modal" data-bs-target="#modalSala">
+                + Agregar Nueva Sala
+            </button>
+        </div>
+
+        <div th:if="${exito}" class="alert alert-dismissible fade show shadow-sm" 
+             style="background-color: #f8bbd0; color: #880e4f; border-left: 5px solid #e91e63;">
+            <strong th:text="${exito}"></strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="card shadow">
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">ID</th>
+                            <th>Nombre de la Sala</th>
+                            <th>Capacidad (Personas)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="s : ${salas}">
+                            <td class="ps-4 fw-bold" th:text="${s.id}" style="color: #7b1fa2;"></td>
+                            <td th:text="${s.nombre}"></td>
+                            <td>
+                                <span class="badge rounded-pill" style="background-color: #ce93d8; color: #4a148c;" 
+                                      th:text="${s.capacidad} + ' lugares'"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalSala" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" style="border-radius: 15px; overflow: hidden;">
+                <form th:action="@{/salas/guardar}" th:object="${sala}" method="POST">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Registrar Sala</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold" style="color: #4a148c;">Nombre</label>
+                            <input type="text" th:field="*{nombre}" class="form-control" placeholder="Ej: Sala Diamante" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold" style="color: #4a148c;">Capacidad</label>
+                            <input type="number" th:field="*{capacidad}" class="form-control" min="1" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-custom">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

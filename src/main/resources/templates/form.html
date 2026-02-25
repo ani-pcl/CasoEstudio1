@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>MeetingPlanner CR</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <div class="container mt-5">
+        <header class="pb-3 mb-4 border-bottom">
+            <span class="fs-4">MeetingPlanner CR - Gestión de Reuniones</span>
+        </header>
+
+        <div th:if="${exito}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <span th:text="${exito}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="row">
+            <div class="col-md-5">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between">
+                        <h5 class="mb-0">Salas</h5>
+                        <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#modalSala">Nueva Sala</button>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Cap.</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="s : ${salas}">
+                                    <td th:text="${s.id}"></td>
+                                    <td th:text="${s.nombre}"></td>
+                                    <td th:text="${s.capacidad}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-7">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-dark text-white d-flex justify-content-between">
+                        <h5 class="mb-0">Próximas Reuniones</h5>
+                        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalReunion">Agendar</button>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Título</th>
+                                    <th>Fecha</th>
+                                    <th>Sala</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="r : ${reuniones}">
+                                    <td th:text="${r.titulo}"></td>
+                                    <td th:text="${r.fecha}"></td>
+                                    <td th:text="${reunionService.obtenerNombreSala(r.salaId)}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalReunion" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form th:action="@{/reuniones/guardar}" th:object="${reunion}" method="POST">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Programar Reunión</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Título</label>
+                            <input type="text" th:field="*{titulo}" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Fecha</label>
+                            <input type="date" th:field="*{fecha}" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Hora</label>
+                            <input type="time" th:field="*{hora}" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Sala</label>
+                            <select th:field="*{salaId}" class="form-select" required>
+                                <option value="">Seleccione una sala...</option>
+                                <option th:each="s : ${salas}" th:value="${s.id}" th:text="${s.nombre}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Reunión</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/webjars/jquery/3.7.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>MeetingPlanner - Reuniones</title>
+    <meta charset="UTF-8">
+    <link th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f3e5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .titulo-principal {
+            font-size: 3.5rem; 
+            font-weight: 800;
+            color: #4a148c;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            background: linear-gradient(45deg, #e91e63, #7b1fa2);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 20px;
+        }
+
+        .btn-custom {
+            background-color: #7b1fa2;
+            color: white;
+            border-radius: 25px;
+            padding: 10px 25px;
+            font-weight: bold;
+            transition: 0.3s;
+            border: none;
+        }
+
+        .btn-custom:hover {
+            background-color: #4a148c;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .table thead {
+            background-color: #fce4ec;
+            color: #880e4f;
+        }
+
+        .badge-sala {
+            background-color: #f06292;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .modal-header {
+            background: linear-gradient(45deg, #7b1fa2, #e91e63);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #4a148c;">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">MeetingPlanner CR</a>
+            <div class="navbar-nav">
+                <a class="nav-link" th:href="@{/salas/listado}">Salas</a>
+                <a class="nav-link active" th:href="@{/reuniones/listado}">Reuniones</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="titulo-principal">Agenda de Reuniones</h1>
+
+        <div class="d-flex justify-content-end mb-4">
+            <button class="btn btn-custom shadow" data-bs-toggle="modal" data-bs-target="#modalReunion">
+                + Agendar Nueva Reunión
+            </button>
+        </div>
+
+        <div th:if="${exito}" class="alert alert-dismissible fade show shadow-sm" 
+             style="background-color: #e1bee7; color: #4a148c; border-left: 5px solid #7b1fa2;">
+            <strong th:text="${exito}"></strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="card shadow">
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">ID</th>
+                            <th>Título</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Sala Asignada</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="r : ${reuniones}">
+                            <td class="ps-4 fw-bold" th:text="${r.id}" style="color: #e91e63;"></td>
+                            <td class="fw-bold" th:text="${r.titulo}"></td>
+                            <td th:text="${r.fecha}"></td>
+                            <td th:text="${r.hora}"></td>
+                            <td>
+                                <span class="badge badge-sala rounded-pill p-2 px-3" 
+                                      th:text="${reunionService.obtenerNombreSala(r.salaId)}"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalReunion" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" style="border-radius: 15px; overflow: hidden;">
+                <form th:action="@{/reuniones/guardar}" th:object="${reunion}" method="POST">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Programar Reunión</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold" style="color: #4a148c;">Título de la Reunión</label>
+                            <input type="text" th:field="*{titulo}" class="form-control" placeholder="Ej: Revisión Mensual" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Fecha</label>
+                                <input type="date" th:field="*{fecha}" class="form-control" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Hora</label>
+                                <input type="time" th:field="*{hora}" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold" style="color: #4a148c;">Seleccionar Sala</label>
+                            <select th:field="*{salaId}" class="form-select" required style="border: 2px solid #e1bee7;">
+                                <option value="">-- Elija un espacio --</option>
+                                <option th:each="s : ${salas}" th:value="${s.id}" th:text="${s.nombre}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-custom">Agendar Ahora</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
